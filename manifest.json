@@ -1,0 +1,26 @@
+{
+    "name": "requesttp",
+    "version": "1.0",
+    "manifest_version": 2,
+    "description": "requesttp - a tool for http requests",
+    "icons": {
+        "16": "resources/requesttpicon16.png",
+        "32": "resources/requesttpicon32.png",
+        "48": "resources/requesttpicon48.png",
+        "128": "resources/requesttpicon128.png"
+    },
+
+    "browser_action": {
+        "default_icon": "resources/requesttpicon24.png",
+        "default_title": "requesttp"
+    },
+
+    //    "default_locale": "en",
+
+    "options_page": "main.html",
+    "background": {
+        "scripts": ["eventPage.js"],
+        "persistent": false
+    },
+    "permissions": ["tabs", "http://*/*", "https://*/*", "storage"]
+}

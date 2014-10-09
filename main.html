@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Requesttp - tool for http requests</title>
+    <link rel="stylesheet" href="style/pure/pure-min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>Requesttp - tool for http requests</h1>
+    </div>
+    </div>
+    <div class="content">
+        <div class="pure-g">
+            <div class="pure-u-2-5" ng-controller="requestController">
+                <form class="pure-form pure-form-stacked rect" ng-submit="submit()">
+                    <fieldset>
+                        <legend>
+                            <h3>Request</h3>
+                        </legend>
+                        <div class="pure-g">
+                            <div class="pure-u-1-2">
+                                <label for="url">
+                                    <b class="linkbtn">URL:</b><a href="" ng-click="openFavorites()" class="linkbtn">favorites</a><a href="" ng-click="insertProtocol('http')" class="linkbtn">http://</a><a href="" ng-click="insertProtocol('https')" class="linkbtn">https://</a>
+                                </label>
+                            </div>
+                            <div class="pure-u-1-2">
+                                <a href="" ng-click="addToFavorites()">
+                                    <i class="fa" ng-class="{ 'fa-star': isFavorite, 'fa-star-o': !isFavorite }" style="float:right;" title="add to favorites"></i>
+                                </a>
+                            </div>
+                            <div class="pure-u-1">
+                                <input type="text" name="url" ng-model="url" class="pure-input-1" focus-me="focusOnUrl" />
+                                <!--  ng-change="urlChanged()" /> -->
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="method"><b>Method:</b> {{methods[selectedIndex]}}</label>
+                                <button ng-repeat="method in methods" class="pure-button pure-button-{{method}}" ng-click="select($index)" ng-class="{'pure-button-selected': styles[$index]}">{{method}}</button>
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="header"><b class="linkbtn">Header:</b><a href="" ng-click="insertMacro()" class="linkbtn">header macros</a><a href="" ng-click="loadHeader()" class="linkbtn">load</a><a href="" ng-click="saveHeaderPopup = true" class="linkbtn">save</a><a href="" ng-click="headers=''" class="linkbtn">clear</a>
+                                </label>
+                                <textarea name="header" rows="6" class="pure-input-1" ng-model="headers" focus-me="focusOnHeaders"></textarea>
+                                <div class="error" ng-show="errorInHeaders != null">{{errorInHeaders}}</div>
+                            </div>
+                            <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 3">
+                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''">clear</a><a href="" class="linkbtn" ng-click="urlencodePopup = true">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()">enter json encoded</a>
+                                </label>
+                                <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
+                            </div>
+                            <div class="pure-u-1">
+                                <button type="submit" ng-click="submit()" class="pure-button pure-button-primary" style="float:right;">SEND&nbsp;
+                                    <i class="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div popup="popup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="popup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>Insert header macro</h2>
+                        Popular Content Types:
+                        <br/>
+                        <a ng-repeat="ct in contentTypeService.contentTypes" href="" ng-click="addContentType(ct)" class="linkbtn">{{ct.title}}</a>
+                        <br />Other Headers:
+                        <div ng-repeat="h in headerService.headers">
+                            <a href="" ng-click="setHeader(h)">{{h}}</a>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <div popup="favpopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="favpopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>Favorites</h2>
+                        <div ng-repeat="fav in favoriteUrls" class="pure-g">
+                            <a href="" ng-click="chooseFavorite($index)" class="pure-u-23-24">{{fav | truncate:100}}</a><a class="pure-u-1-24" href="" ng-click="removeFavorite($index)"><i class="fa fa-remove"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div popup="savedHeaderPopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="savedHeaderPopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>saved headers</h2>
+                        <div ng-repeat="hdr in savedHeaders track by hdr.name">
+                            <a href="" ng-click="loadSelectedHeader($index)">{{hdr.name}}</a><a style="float:right;" href="" ng-click="removeHeader($index)"><i class="fa fa-remove"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div popup="saveHeaderPopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="saveHeaderPopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>save header</h2>
+                        <form class="pure-form">
+                            <fieldset>
+                                <legend>save header</legend>
+                                <label for="name">name:</label>
+                                <input type="text" name="name" ng-model="savedHeaderName" />
+                                <label for="value">value:</label>
+                                <textarea ng-model="headers" rows="6"></textarea>
+                                <button type="submit" ng-click="addToSavedHeaders()" class="pure-button pure-button-primary">save</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div popup="urlencodePopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="urlencodePopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>Enter data for url encoded data:</h2>
+                        <form class="pure-form pure-form-stacked">
+                            <label for="key">Key:</label>
+                            <input type="text" name="key" ng-model="urlencodeKey" class="pure-input-1" />
+                            <label for="value">Value:</label>
+                            <input type="text" name="value" ng-model="urlencodeValue" class="pure-input-1" />
+                            <button class="pure-button" ng-click="addToUrlencoded()">Add</button>
+                            <label for="encodedData"><b class="linkbtn">Encoded Data:</b><a href="" class="linkbtn" ng-click="urlencodedData='';urlencodeKey='';urlencodeValue='';">clear</a>
+                            </label>
+                            <textarea name="encodedData" ng-model="urlencodedData" readonly class="pure-input-1" rows="6"></textarea>
+                            <button class="pure-button pure-button-primary" style="float:right;" ng-click="acceptUrlEncoded()">Ok</button>
+                            <button class="pure-button pure-button-DELETE" style="float:right;" ng-click="urlencodePopup=false">Cancel</button>
+                            <div style="height:36px;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div popup="jsonencodePopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="jsonencodePopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>Enter data for json encoded data:</h2>
+                        <form class="pure-form pure-form-stacked">
+                            <label for="key" hide-if-array="jsonCurrentObj">Key:</label>
+                            <input type="text" name="key" ng-model="jsonencodeKey" class="pure-input-1" hide-if-array="jsonCurrentObj" />
+                            <label for="value">Value:</label>
+                            <input type="text" name="value" ng-model="jsonencodeValue" class="pure-input-1" />
+                            <button class="pure-button" ng-click="addToJsonencoded()">Add</button>
+                            <button class="pure-button" ng-click="jsonNewObject()">New Object</button>
+                            <button class="pure-button" ng-click="jsonNewArray()">New Array</button>
+                            <button class="pure-button" ng-click="jsonCloseObject()" ng-show="jsonCurrentObj && jsonCurrentObj != jsonencodedData" hide-if-array="jsonCurrentObj">Close Object</button>
+                            <button class="pure-button" ng-click="jsonCloseArray()" ng-show="jsonCurrentObj && jsonCurrentObj != jsonencodedData" show-if-array="jsonCurrentObj">Close Array</button>
+                            <label for="encodedData"><b class="linkbtn">Encoded Data:</b><a href="" class="linkbtn" ng-click="clearJsonData()">clear</a>
+                            </label>
+                            <textarea name="encodedData" readonly class="pure-input-1" rows="10">{{jsonencodedData | j2s }}</textarea>
+                            <button class="pure-button pure-button-primary" style="float:right;" ng-click="acceptJsonEncoded()">Ok</button>
+                            <button class="pure-button pure-button-DELETE" style="float:right;" ng-click="jsonencodePopup=false">Cancel</button>
+                            <div style="height:36px;"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="pure-u-3-5" ng-controller="responseController">
+
+                <form class="pure-form pure-form-stacked rect">
+                    <fieldset>
+                        <legend>
+                            <h3>Response</h3>
+                        </legend>
+                        <div class="inprog" ng-show="response.inprog">
+                            <i class="fa fa-circle-o-notch fa-5x fa-spin"></i>
+                        </div>
+                        <div class="pure-g" ng-show="response.status != '' && !response.inprog">
+                            <div class="pure-u-1">
+                                <label for="status"><b class="linkbtn">Status:</b>
+                                </label>
+                                <input type="text" id="status" name="status" ng-model="response.status" class="pure-input-1" ng-class="response.statuscolor" readonly />
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="headers"><b class="linkbtn">Headers:</b>
+                                </label>
+                                <textarea type="text" name="headers" ng-model="response.headers" class="pure-input-1" rows="7" readonly>
+                                </textarea>
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="dataPopup = true"><i class="fa fa-search-plus"></i></a>format as:<a href="" class="linkbtn" ng-click="formatAs($index)" ng-repeat="format in formats">{{format}}</a>
+                                </label>
+                                <textarea type="text" name="data" ng-model="response.data" class="pure-input-1" rows="14" readonly></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div popup="dataPopup">
+                    <div class="popup-inner popup-inner-big">
+                        <a href="" ng-click="dataPopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>Data:</h2>
+                        <textarea ng-model="response.data" readonly rows="40"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script src="lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular/angular-animate.min.js"></script>
+    <script src="lib/vkbeautify.js"></script>
+    <script src="lib/beautify-html.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/request-controller.js"></script>
+    <script src="js/response-controller.js"></script>
+</body>
+
+</html>
