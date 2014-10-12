@@ -14,9 +14,6 @@
         "default_icon": "resources/requesttpicon24.png",
         "default_title": "requesttp"
     },
-
-    //    "default_locale": "en",
-
     "options_page": "main.html",
     "background": {
         "scripts": ["eventPage.js"],
