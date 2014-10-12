@@ -67,7 +67,8 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
             if (err) {
                 $scope.response.inprog = false;
                 $scope.errorInHeaders = err;
-                console.log(err);
+                console
+.log(err);
             } else {
                 $http({
                         method: $scope.methods[$scope.selectedIndex],
@@ -231,7 +232,9 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
             if (err) {
                 alert("there was an error loading favorites");
             } else {
-                $scope.favoriteUrls = data.favoriteUrls;
+                if (data.favoriteUrls) {
+                    $scope.favoriteUrls = data.favoriteUrls;
+                }
                 callback();
             }
         });
@@ -256,7 +259,6 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
     }
 
     $scope.addToFavorites = function() {
-        console.log($scope.url);
         var index = $.inArray($scope.url, $scope.favoriteUrls);
         if (index < 0) {
             $scope.favoriteUrls.push($scope.url);
