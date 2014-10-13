@@ -9,6 +9,16 @@ app.service('responseService', function(statusService) {
     this.statusObj = {};
     this.statuscolor = "";
     this.inprog = false;
+    this.error = false;
+    this.errorMsg = "";
+    this.canceller = undefined;
+
+    this.gotError = function(err) {
+        console.log(err);
+        this.error = true;
+        this.errorMsg = err.message;
+        this.inprog = false;
+    }
 
     this.setHeaders = function(hdrs) {
         for (var key in hdrs) {
@@ -17,22 +27,29 @@ app.service('responseService', function(statusService) {
         this.headersObj = hdrs;
     }
     this.setStatus = function(status) {
-        this.statusObj = statusService.getStatus(status);
-        this.status = this.statusObj.code + " " + this.statusObj.status;
         this.inprog = false;
-        if (status < 200) {
-            this.statuscolor = "status-white";
-            return;
-        }
-        if (status < 300) {
-            this.statuscolor = "status-green";
-            return;
-        }
-        if (status < 400) {
-            this.statuscolor = "status-orange";
-            return;
-        }
+        this.error = false;
         this.statuscolor = "status-red";
+        if (status) {
+            this.statusObj = statusService.getStatus(status);
+            this.status = this.statusObj.code + " " + this.statusObj.status;
+            if (status < 200) {
+                this.statuscolor = "status-white";
+                return;
+            }
+            if (status < 300) {
+                this.statuscolor = "status-green";
+                return;
+            }
+            if (status < 400) {
+                this.statuscolor = "status-orange";
+                return;
+            }
+        } else {
+            this.gotError({
+                message: "canceled"
+            });
+        }
     }
 
     this.formatAs = function(format) {

@@ -3,7 +3,7 @@
 var protocolRegex = /\w+:\/\//;
 
 
-app.controller('requestController', function($scope, $http, contentTypeService, headerService, responseService) {
+app.controller('requestController', function($scope, $http, $q, contentTypeService, headerService, responseService) {
 
     $scope.methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"];
     $scope.styles = [true, false, false, false, false, false];
@@ -73,15 +73,21 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
                 console
                     .log(err);
             } else {
-                $http({
-                        method: $scope.methods[$scope.selectedIndex],
-                        url: $scope.url,
-                        headers: hdrs,
-                        data: $scope.data,
-                        cache: false
-                    })
-                    .success($scope.responseCallback)
-                    .error($scope.responseCallback);
+                $scope.response.canceller = $q.defer();
+                try {
+                    $http({
+                            method: $scope.methods[$scope.selectedIndex],
+                            url: $scope.url,
+                            headers: hdrs,
+                            data: $scope.data,
+                            cache: false,
+                            timeout: $scope.response.canceller.promise
+                        })
+                        .success($scope.responseCallback)
+                        .error($scope.responseCallback);
+                } catch (err) {
+                    $scope.response.gotError(err);
+                }
             }
         });
     };

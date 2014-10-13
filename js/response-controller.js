@@ -8,4 +8,9 @@ app.controller('responseController', function($scope, responseService) {
     $scope.formatAs = function(format) {
         $scope.response.formatAs($scope.formats[format]);
     }
+
+    $scope.cancelRequest = function() {
+        console.log("canceling");
+        $scope.response.canceller.resolve();
+    }
 });

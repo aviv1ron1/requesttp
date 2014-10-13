@@ -104,6 +104,9 @@ input#status.status-red {
     text-align: center;
     padding-top: 100px;
 }
+.inprog button {
+    margin-top: 16px;
+}
 .close-popup {
     float: right;
 }
@@ -155,4 +158,8 @@ input#status.status-red {
 }
 .error {
     color: red;
+}
+.response-err {
+    color: red;
+    text-align: center;
 }

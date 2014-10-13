@@ -36,7 +36,6 @@
                             </div>
                             <div class="pure-u-1">
                                 <input type="text" name="url" ng-model="url" class="pure-input-1" focus-me="focusOnUrl" />
-                                <!--  ng-change="urlChanged()" /> -->
                             </div>
                             <div class="pure-u-1">
                                 <label for="method"><b>Method:</b> {{methods[selectedIndex]}}</label>
@@ -54,7 +53,7 @@
                                 <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
                             </div>
                             <div class="pure-u-1">
-                                <button type="submit" ng-click="submit()" class="pure-button pure-button-primary" style="float:right;">SEND&nbsp;
+                                <button type="submit" ng-click="submit()" class="pure-button pure-button-primary" style="float:right;" ng-disabled="response.inprog">SEND&nbsp;
                                     <i class="fa fa-chevron-right"></i>
                                 </button>
                             </div>
@@ -181,7 +180,6 @@
                 </div>
             </div>
             <div class="pure-u-3-5" ng-controller="responseController">
-
                 <form class="pure-form pure-form-stacked rect">
                     <fieldset>
                         <legend>
@@ -189,8 +187,13 @@
                         </legend>
                         <div class="inprog" ng-show="response.inprog">
                             <i class="fa fa-circle-o-notch fa-5x fa-spin"></i>
+                            <br />
+                            <button class="pure-button pure-button-DELETE" ng-click="cancelRequest()">Cancel</button>
                         </div>
-                        <div class="pure-g" ng-show="response.status != '' && !response.inprog">
+                        <div class="response-err" ng-show="response.error">
+                            {{response.errorMsg}}
+                        </div>
+                        <div class="pure-g" ng-show="response.status != '' && !response.inprog && !response.error">
                             <div class="pure-u-1">
                                 <label for="status"><b class="linkbtn">Status:</b>
                                 </label>
