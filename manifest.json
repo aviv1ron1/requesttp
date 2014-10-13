@@ -1,6 +1,6 @@
 {
     "name": "requesttp",
-    "version": "1.0",
+    "version": "1.2",
     "manifest_version": 2,
     "description": "requesttp - a tool for http requests",
     "icons": {
