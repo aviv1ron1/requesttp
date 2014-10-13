@@ -49,7 +49,7 @@
                                 <div class="error" ng-show="errorInHeaders != null">{{errorInHeaders}}</div>
                             </div>
                             <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 3">
-                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''">clear</a><a href="" class="linkbtn" ng-click="urlencodePopup = true">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()">enter json encoded</a>
+                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''">clear</a><a href="" class="linkbtn" ng-click="openUrlEncoder()">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()">enter json encoded</a>
                                 </label>
                                 <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
                             </div>
@@ -114,17 +114,44 @@
                         <a href="" ng-click="urlencodePopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
                         <h2>Enter data for url encoded data:</h2>
                         <form class="pure-form pure-form-stacked">
-                            <label for="key">Key:</label>
-                            <input type="text" name="key" ng-model="urlencodeKey" class="pure-input-1" />
-                            <label for="value">Value:</label>
-                            <input type="text" name="value" ng-model="urlencodeValue" class="pure-input-1" />
-                            <button class="pure-button" ng-click="addToUrlencoded()">Add</button>
-                            <label for="encodedData"><b class="linkbtn">Encoded Data:</b><a href="" class="linkbtn" ng-click="urlencodedData='';urlencodeKey='';urlencodeValue='';">clear</a>
-                            </label>
-                            <textarea name="encodedData" ng-model="urlencodedData" readonly class="pure-input-1" rows="6"></textarea>
-                            <button class="pure-button pure-button-primary" style="float:right;" ng-click="acceptUrlEncoded()">Ok</button>
-                            <button class="pure-button pure-button-DELETE" style="float:right;" ng-click="urlencodePopup=false">Cancel</button>
-                            <div style="height:36px;"></div>
+                            <div class="pure-g">
+                                <div class="pure-u-1-3">
+                                    <div class="rect">
+                                        <label for="key">Key:</label>
+                                        <input type="text" name="key" ng-model="urlencodeKey" class="pure-input-1" focus-me="focusOnUrlEncodedKey" />
+                                        <label for="value">Value:</label>
+                                        <input type="text" name="value" ng-model="urlencodeValue" class="pure-input-1" />
+                                        <button class="pure-button" ng-click="addToUrlencoded()">Add</button>
+                                    </div>
+                                </div>
+                                <div class="pure-u-2-3">
+                                    <div class="pure-g rect" style="max-height: 200px; overflow-y: auto;">
+                                        <div class="pure-u-1-2">key</div>
+                                        <div class="pure-u-1-2">value</div>
+                                        <div ng-repeat="pair in urlEncodedPairs" class="pure-u-1">
+                                            <div class="pure-g">
+                                                <div class="pure-u-11-24">
+                                                    <input type="text" class="pure-input-1" ng-model="pair.key" ng-change="renderUrlEncoded()">
+                                                </div>
+                                                <div class="pure-u-11-24">
+                                                    <input type="text" class="pure-input-1" ng-model="pair.value" ng-change="renderUrlEncoded()">
+                                                </div>
+                                                <div class="pure-u-2-24 centered">
+                                                    <a href="" class="linkbtn" ng-click="deleteUrlEncodedPair($index)"><i class="fa fa-close"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pure-u-1-1">
+                                    <label for="encodedData"><b class="linkbtn">Encoded Data:</b><a href="" class="linkbtn" ng-click="clearUrlEncoded()">clear</a>
+                                    </label>
+                                    <textarea name="encodedData" ng-model="urlencodedData" readonly class="pure-input-1" rows="6"></textarea>
+                                    <button class="pure-button pure-button-primary" style="float:right;" ng-click="acceptUrlEncoded()">Ok</button>
+                                    <button class="pure-button pure-button-DELETE" style="float:right;" ng-click="urlencodePopup=false">Cancel</button>
+                                    <div style="height:36px;"></div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

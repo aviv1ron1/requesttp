@@ -107,6 +107,13 @@ input#status.status-red {
 .close-popup {
     float: right;
 }
+.centered {
+    text-align: center;
+}
+.centered a {
+    margin: auto;
+    line-height: 2.8em;
+}
 .linkbtn {
     margin-right: 10px;
 }

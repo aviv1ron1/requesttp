@@ -27,12 +27,15 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
     $scope.savedHeaderPopup = false;
     $scope.saveHeaderPopup = false;
     $scope.errorInHeaders = "";
+    $scope.urlencodeKey = "";
     $scope.urlencodeValue = "";
     $scope.jsonencodedData = {};
     $scope.jsonencodeKey = "";
     $scope.jsonencodeValue = "";
     $scope.jsonObjectStack = [];
     $scope.jsonCurrentObj = undefined;
+    $scope.focusOnUrlEncodedKey = false;
+    $scope.urlEncodedPairs = [];
 
     $scope.responseCallback = function(data, status, headers, config) {
         $scope.response.setData(data, headers());
@@ -68,7 +71,7 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
                 $scope.response.inprog = false;
                 $scope.errorInHeaders = err;
                 console
-.log(err);
+                    .log(err);
             } else {
                 $http({
                         method: $scope.methods[$scope.selectedIndex],
@@ -302,23 +305,68 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
         return encodeURIComponent(text).replace(/'/g, "%27").replace(/"/g, "%22");
     }
 
+    $scope.urlDecode = function(text) {
+        return decodeURIComponent(text).replace("%27", "'").replace("%22", '"');
+    }
+
     $scope.acceptUrlEncoded = function() {
         $scope.data = $scope.urlencodedData;
         $scope.urlencodePopup = false;
     }
 
-    $scope.addToUrlencoded = function() {
-        var keyEncoded = $scope.urlEncode($scope.urlencodeKey);
-        var valueEncoded = $scope.urlEncode($scope.urlencodeValue);
-        if ($scope.urlencodedData && $scope.urlencodedData != "") {
-            $scope.urlencodedData += "&";
-        } else {
-            $scope.urlencodedData = "";
+    $scope.renderUrlEncoded = function() {
+        $scope.urlencodedData = "";
+        if ($scope.urlEncodedPairs.length > 0) {
+            var len = $scope.urlEncodedPairs.length;
+            for (var i = 0; i < len - 1; i++) {
+                $scope.urlencodedData += $scope.urlEncode($scope.urlEncodedPairs[i].key) + "=" + $scope.urlEncode($scope.urlEncodedPairs[i].value) + "&";
+            }
+            $scope.urlencodedData += $scope.urlEncode($scope.urlEncodedPairs[len - 1].key) + "=" + $scope.urlEncode($scope.urlEncodedPairs[len - 1].value);
         }
-        $scope.urlencodedData += keyEncoded + "=" + valueEncoded;
+    }
+
+    $scope.addToUrlencoded = function() {
+        $scope.urlEncodedPairs.push({
+            key: $scope.urlencodeKey,
+            value: $scope.urlencodeValue
+        });
+
+        $scope.renderUrlEncoded();
         $scope.urlencodeKey = "";
         $scope.urlencodeValue = "";
+        $scope.focusOnUrlEncodedKey = true;
     }
+
+    $scope.deleteUrlEncodedPair = function(index) {
+        $scope.urlEncodedPairs.splice(index, 1);
+        $scope.renderUrlEncoded();
+    }
+
+    $scope.clearUrlEncoded = function() {
+        $scope.urlencodedData = '';
+        $scope.urlencodeKey = '';
+        $scope.urlencodeValue = '';
+        $scope.urlEncodedPairs = [];
+    }
+
+    $scope.openUrlEncoder = function() {
+        $scope.urlEncodedPairs = [];
+        try {
+            var pairs = $scope.data.split("&");
+            for (var i = 0; i < pairs.length; i++) {
+                var kvp = pairs[i].split("=");
+                $scope.urlEncodedPairs.push({
+                    key: $scope.urlDecode(kvp[0]),
+                    value: $scope.urlDecode(kvp[1])
+                });
+            }
+        } catch (err) {
+            $scope.urlEncodedPairs = [];
+        }
+        $scope.renderUrlEncoded();
+        $scope.urlencodePopup = true;
+    }
+
 
     $scope.openJsonEncoder = function() {
         $scope.jsonencodePopup = true;
@@ -330,6 +378,7 @@ app.controller('requestController', function($scope, $http, contentTypeService, 
             $scope.jsonCurrentObj = undefined;
         }
     }
+
 
     $scope.clearJsonData = function() {
         $scope.jsonencodeKey = "";
