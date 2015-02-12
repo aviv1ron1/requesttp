@@ -1,5 +1,13 @@
 'use strict';
 
+app.directive('analytics', function() {
+    return function(scope, element, attr) {
+        element.on('click', function(event) {
+            _gaq.push(['_trackEvent', element.attr("analytics"), 'clicked']);
+        });
+    }
+});
+
 app.directive('popup', function($animate) {
     return {
         restrict: 'A',
@@ -31,7 +39,6 @@ app.directive('hideIfArray', function($animate) {
         compile: function(element, attributes) {
             var link = function($scope, element, attributes) {
                 $scope.$watch('watch', function(newVal) {
-                    console.log(newVal);
                     if (newVal instanceof Array) {
                         element.hide();
                     } else {
@@ -53,7 +60,6 @@ app.directive('showIfArray', function($animate) {
         compile: function(element, attributes) {
             var link = function($scope, element, attributes) {
                 $scope.$watch('watch', function(newVal) {
-                    console.log(newVal);
                     if (newVal instanceof Array) {
                         element.show();
                     } else {

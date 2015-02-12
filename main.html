@@ -26,34 +26,34 @@
                         <div class="pure-g">
                             <div class="pure-u-1-2">
                                 <label for="url">
-                                    <b class="linkbtn">URL:</b><a href="" ng-click="openFavorites()" class="linkbtn">favorites</a><a href="" ng-click="insertProtocol('http')" class="linkbtn">http://</a><a href="" ng-click="insertProtocol('https')" class="linkbtn">https://</a>
+                                    <b class="linkbtn">URL:</b><a href="" ng-click="openFavorites()" class="linkbtn" analytics="url-favorites">favorites</a><a href="" ng-click="insertProtocol('http')" class="linkbtn" analytics="http-macro">http://</a><a href="" ng-click="insertProtocol('https')" class="linkbtn" analytics="https-macro">https://</a><a href="" ng-click="openUrlEncode()" class="linkbtn" alt="opens a pop up to add url encoded strings" analytics="url-encode">url encode</a>
                                 </label>
                             </div>
                             <div class="pure-u-1-2">
-                                <a href="" ng-click="addToFavorites()">
+                                <a href="" ng-click="addToFavorites()" analytics="add-favorite">
                                     <i class="fa" ng-class="{ 'fa-star': isFavorite, 'fa-star-o': !isFavorite }" style="float:right;" title="add to favorites"></i>
                                 </a>
                             </div>
                             <div class="pure-u-1">
-                                <input type="text" name="url" ng-model="url" class="pure-input-1" focus-me="focusOnUrl" />
+                                <input type="text" name="url" ng-model="url" class="pure-input-1 form-control" focus-me="focusOnUrl" typeahead="u for u in history | filter:$viewValue | limitTo:8" />
                             </div>
                             <div class="pure-u-1">
                                 <label for="method"><b>Method:</b> {{methods[selectedIndex]}}</label>
-                                <button ng-repeat="method in methods" class="pure-button pure-button-{{method}}" ng-click="select($index)" ng-class="{'pure-button-selected': styles[$index]}">{{method}}</button>
+                                <button ng-repeat="method in methods" class="pure-button pure-button-{{method}}" ng-click="select($index)" ng-class="{'pure-button-selected': styles[$index]}" analytics="methods-{{method}}">{{method}}</button>
                             </div>
                             <div class="pure-u-1">
-                                <label for="header"><b class="linkbtn">Header:</b><a href="" ng-click="insertMacro()" class="linkbtn">header macros</a><a href="" ng-click="loadHeader()" class="linkbtn">load</a><a href="" ng-click="saveHeaderPopup = true" class="linkbtn">save</a><a href="" ng-click="headers=''" class="linkbtn">clear</a>
+                                <label for="header"><b class="linkbtn">Header:</b><a href="" ng-click="insertMacro()" class="linkbtn" analytics="insert-header-macro">header macros</a><a href="" ng-click="loadHeader()" class="linkbtn" analytics="load-header-macro">load</a><a href="" ng-click="saveHeaderPopup = true" class="linkbtn" analytics="save-header-macro">save</a><a href="" ng-click="headers=''" class="linkbtn" analytics="clear-header-macro">clear</a>
                                 </label>
                                 <textarea name="header" rows="6" class="pure-input-1" ng-model="headers" focus-me="focusOnHeaders"></textarea>
                                 <div class="error" ng-show="errorInHeaders != null">{{errorInHeaders}}</div>
                             </div>
                             <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 3">
-                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''">clear</a><a href="" class="linkbtn" ng-click="openUrlEncoder()">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()">enter json encoded</a>
+                                <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''" analytics="clear-data">clear</a><a href="" class="linkbtn" ng-click="openUrlEncoder()" analytics="url-encode-data">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()" analytics="json-encode-data">enter json encoded</a>
                                 </label>
                                 <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
                             </div>
                             <div class="pure-u-1">
-                                <button type="submit" ng-click="submit()" class="pure-button pure-button-primary" style="float:right;" ng-disabled="response.inprog">SEND&nbsp;
+                                <button type="submit" ng-click="submit()" class="pure-button pure-button-primary" style="float:right;" ng-disabled="response.inprog" analytics="submit">SEND&nbsp;
                                     <i class="fa fa-chevron-right"></i>
                                 </button>
                             </div>
@@ -63,8 +63,7 @@
                 <div popup="popup">
                     <div class="popup-inner">
                         <a href="" ng-click="popup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
-                        <h2>Insert header macro</h2>
-                        Popular Content Types:
+                        <h2>Insert header macro</h2> Popular Content Types:
                         <br/>
                         <a ng-repeat="ct in contentTypeService.contentTypes" href="" ng-click="addContentType(ct)" class="linkbtn">{{ct.title}}</a>
                         <br />Other Headers:
@@ -105,6 +104,20 @@
                                 <textarea ng-model="headers" rows="6"></textarea>
                                 <button type="submit" ng-click="addToSavedHeaders()" class="pure-button pure-button-primary">save</button>
                             </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div popup="urlencodePopupForUrl">
+                    <div class="popup-inner">
+                        <a href="" ng-click="urlencodePopupForUrl=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <h2>URL Encode</h2>
+                        <form class="pure-form pure-form-stacked">
+                            <label for="name">string to encode:</label>
+                            <input type="text" name="string" ng-model="stringToEncode" class="pure-input-2-3" />
+                            <button type="submit" ng-click="encodeAndAddToUrl()" class="pure-button pure-button-primary">encode</button>
+                            <br />
+                            <label for="url">URL:</label>
+                            <input type="text" name="url" ng-model="url" class="pure-input-1" />
                         </form>
                     </div>
                 </div>
@@ -221,7 +234,9 @@
                     </div>
                 </div>
             </div>
-
+            <div class="pure-u-1" style="text-align: center;">
+                the source code is open source on <a href="https://github.com/aviv1ron1/requesttp" target="_blank">github</a>. bug reports or feature requests can be submitted on <a href="https://github.com/aviv1ron1/requesttp/issues" target="_blank">github issues</a>
+            </div>
         </div>
 
     </div>
@@ -230,6 +245,8 @@
     <script src="lib/angular/angular-animate.min.js"></script>
     <script src="lib/vkbeautify.js"></script>
     <script src="lib/beautify-html.js"></script>
+    <script src="lib/angularui/ui-bootstrap-custom-0.12.0.min.js"></script>
+    <script src="lib/angularui/ui-bootstrap-custom-tpls-0.12.0.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>

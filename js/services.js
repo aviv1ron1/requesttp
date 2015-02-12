@@ -21,6 +21,7 @@ app.service('responseService', function(statusService) {
     }
 
     this.setHeaders = function(hdrs) {
+        this.headers = "";
         for (var key in hdrs) {
             this.headers += key + ": " + hdrs[key] + "\n";
         }

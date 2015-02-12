@@ -36,11 +36,22 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
     $scope.jsonCurrentObj = undefined;
     $scope.focusOnUrlEncodedKey = false;
     $scope.urlEncodedPairs = [];
+    $scope.urlencodePopupForUrl = false;
+    $scope.history = [];
 
     $scope.responseCallback = function(data, status, headers, config) {
         $scope.response.setData(data, headers());
         $scope.response.setHeaders(headers());
         $scope.response.setStatus(status);
+        // var xh = this;
+
+        // console.log("response callback", xh.readyState);
+        // if (xh.readyState == xh.DONE) {
+        //     console.log("done", xh.status);
+        //     $scope.$apply(function() {
+        //         $scope.response.setStatus(xh.status);
+        //     });
+        // }
     }
 
     $scope.parseHeaders = function(callback) {
@@ -59,6 +70,20 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
         callback(null, hdrs);
     }
 
+    $scope.addToHistory = function(url) {
+        for (var i = 0; i < $scope.history.length; i++) {
+            if (url == $scope.history[i]) {
+                $scope.history = $scope.history.splice(i, 1);
+                continue;
+            }
+        }
+        $scope.history.push(url);
+        if ($scope.history.length > 50) {
+            $scope.history.shift();
+        }
+        $scope.saveHistory(function() {});
+    }
+
     $scope.submit = function() {
         if ($scope.dontSubmit) {
             $scope.dontSubmit = false;
@@ -70,9 +95,10 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
             if (err) {
                 $scope.response.inprog = false;
                 $scope.errorInHeaders = err;
-                console
-                    .log(err);
+                console.log(err);
             } else {
+                $scope.addToHistory($scope.url);
+
                 $scope.response.canceller = $q.defer();
                 try {
                     $http({
@@ -85,6 +111,12 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
                         })
                         .success($scope.responseCallback)
                         .error($scope.responseCallback);
+
+                    // var client = new XMLHttpRequest();
+                    // client.onreadystatechange = $scope.responseCallback;
+                    // client.open($scope.methods[$scope.selectedIndex], $scope.url);
+                    // client.send();
+
                 } catch (err) {
                     $scope.response.gotError(err);
                 }
@@ -236,10 +268,29 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
         $scope.focusOnHeaders = true;
     }
 
+    $scope.loadHistory = function(callback) {
+        $scope.storageGet('history', function(err, data) {
+            if (err) {
+                console.error("there was an error loading history");
+            } else {
+                if (data.history) {
+                    $scope.history = data.history;
+                }
+                callback();
+            }
+        });
+    }
+
+    $scope.saveHistory = function(callback) {
+        $scope.storageSet({
+            'history': $scope.history
+        }, "there was an error saving your history", callback);
+    }
+
     $scope.loadFavorites = function(callback) {
         $scope.storageGet('favoriteUrls', function(err, data) {
             if (err) {
-                alert("there was an error loading favorites");
+                console.error("there was an error loading favorites");
             } else {
                 if (data.favoriteUrls) {
                     $scope.favoriteUrls = data.favoriteUrls;
@@ -373,6 +424,14 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
         $scope.urlencodePopup = true;
     }
 
+    $scope.openUrlEncode = function() {
+        $scope.urlencodePopupForUrl = true;
+    }
+
+    $scope.encodeAndAddToUrl = function() {
+        $scope.url += $scope.urlEncode($scope.stringToEncode);
+        $scope.stringToEncode = "";
+    }
 
     $scope.openJsonEncoder = function() {
         $scope.jsonencodePopup = true;
@@ -465,5 +524,5 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
     }
 
     $scope.loadFavorites(function() {});
-
+    $scope.loadHistory(function() {});
 });
