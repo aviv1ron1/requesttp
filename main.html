@@ -234,7 +234,31 @@
                     </div>
                 </div>
             </div>
+            <div class="pure-u-1" ng-controller="encodersController">
+                <hr>
+                Encoders: <a href="" ng-click="encoder(0)" class="linkbtn" analytics="encoders-base64">base 64</a><a href="" ng-click="encoder(1)" class="linkbtn" analytics="encoders-url">url encode</a>
+                <div popup="encoderPopup">
+                    <div class="popup-inner">
+                        <a href="" ng-click="encoderPopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
+                        <form class="pure-form pure-form-stacked rect">
+                            <fieldset>
+                                <legend>
+                                    <h3>{{names[encoderType]}} Encoding</h3>
+                                </legend>
+                                <label for="from">From:</label>
+                                <input type="text" name="from" ng-model="from" class="pure-input-1" />
+                                <label for="to">To:</label>
+                                <input type="text" name="to" ng-model="to" class="pure-input-1" copy />
+                                <button class="pure-button pure-button-primary" ng-click="encode()">Encode</button>
+                                <button class="pure-button pure-button-primary" ng-click="decode()">Decode</button>
+                                <button class="pure-button pure-button-DELETE" style="float:right;" ng-click="copyAndClose()">Copy to clipboard and close</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="pure-u-1" style="text-align: center;">
+            <hr>
                 the source code is open source on <a href="https://github.com/aviv1ron1/requesttp" target="_blank">github</a>. bug reports or feature requests can be submitted on <a href="https://github.com/aviv1ron1/requesttp/issues" target="_blank">github issues</a>
             </div>
         </div>
@@ -252,6 +276,8 @@
     <script src="js/services.js"></script>
     <script src="js/request-controller.js"></script>
     <script src="js/response-controller.js"></script>
+    <script src="js/encoders-controller.js"></script>
 </body>
 
 </html>
+
