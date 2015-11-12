@@ -40,18 +40,17 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
     $scope.history = [];
 
     $scope.responseCallback = function(data, status, headers, config) {
-        $scope.response.setData(data, headers());
-        $scope.response.setHeaders(headers());
-        $scope.response.setStatus(status);
-        // var xh = this;
+        try {
+            if(data) {
+                $scope.response.setData(data, headers());
+                $scope.response.setHeaders(headers());
+                $scope.response.setStatus(status);
+            } else {
 
-        // console.log("response callback", xh.readyState);
-        // if (xh.readyState == xh.DONE) {
-        //     console.log("done", xh.status);
-        //     $scope.$apply(function() {
-        //         $scope.response.setStatus(xh.status);
-        //     });
-        // }
+            }
+        } catch(err) {
+            $scope.response.gotError(err);
+        }
     }
 
     $scope.parseHeaders = function(callback) {

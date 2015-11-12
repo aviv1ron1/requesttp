@@ -75,32 +75,41 @@ app.service('responseService', function(statusService) {
 
     this.setData = function(data, hdrs) {
         this.dataObj = data;
-        switch (typeof(data)) {
-            case "object":
-                this.data = JSON.stringify(data, undefined, 2);
-                break;
-            default:
-                var ct = hdrs['content-type'];
-                if (!ct) {
-                    ct = "text/plain";
-                }
-                var mime = ct.split(";")[0];
-                switch (mime) {
-                    case "text/html":
-                        this.formatAs('html');
-                        break;
-                    case "text/xml":
-                        this.formatAs('xml');
-                        break;
-                    case "text/css":
-                        this.formatAs('css');
-                        break;
-                    case "application/json":
-                        this.formatAs('json');
-                        break;
-                    default:
+        try {
+            console.log(typeof(data));
+            switch (typeof(data)) {
+                case "object":
+                    try {
+                        this.data = JSON.stringify(data, undefined, 2);
+                    }catch(err) {
                         this.data = data;
-                }
+                    }
+                    break;
+                default:
+                    var ct = hdrs['content-type'];
+                    if (!ct) {
+                        ct = "text/plain";
+                    }
+                    var mime = ct.split(";")[0];
+                    switch (mime) {
+                        case "text/html":
+                            this.formatAs('html');
+                            break;
+                        case "text/xml":
+                            this.formatAs('xml');
+                            break;
+                        case "text/css":
+                            this.formatAs('css');
+                            break;
+                        case "application/json":
+                            this.formatAs('json');
+                            break;
+                        default:
+                            this.data = data;
+                    }
+            }
+        } catch(err) {
+            this.getError(err);
         }
     }
 });

@@ -204,6 +204,7 @@
                             <button class="pure-button pure-button-DELETE" ng-click="cancelRequest()">Cancel</button>
                         </div>
                         <div class="response-err" ng-show="response.error">
+                            <div style="font-size: bigger">There was an error</div>
                             {{response.errorMsg}}
                         </div>
                         <div class="pure-g" ng-show="response.status != '' && !response.inprog && !response.error">
