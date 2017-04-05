@@ -47,7 +47,7 @@
                                 <textarea name="header" rows="6" class="pure-input-1" ng-model="headers" focus-me="focusOnHeaders"></textarea>
                                 <div class="error" ng-show="errorInHeaders != null">{{errorInHeaders}}</div>
                             </div>
-                            <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 3">
+                            <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 4">
                                 <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''" analytics="clear-data">clear</a><a href="" class="linkbtn" ng-click="openUrlEncoder()" analytics="url-encode-data">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()" analytics="json-encode-data">enter json encoded</a>
                                 </label>
                                 <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
@@ -167,7 +167,6 @@
                         </form>
                     </div>
                 </div>
-
                 <div popup="jsonencodePopup">
                     <div class="popup-inner">
                         <a href="" ng-click="jsonencodePopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
@@ -236,8 +235,7 @@
                 </div>
             </div>
             <div class="pure-u-1" ng-controller="encodersController">
-                <hr>
-                Encoders: <a href="" ng-click="encoder(0)" class="linkbtn" analytics="encoders-base64">base 64</a><a href="" ng-click="encoder(1)" class="linkbtn" analytics="encoders-url">url encode</a>
+                <hr> Encoders: <a href="" ng-click="encoder(0)" class="linkbtn" analytics="encoders-base64">base 64</a><a href="" ng-click="encoder(1)" class="linkbtn" analytics="encoders-url">url encode</a>
                 <div popup="encoderPopup">
                     <div class="popup-inner">
                         <a href="" ng-click="encoderPopup=false" class="close-popup"><i class="fa fa-close fa-2x"></i></a>
@@ -259,11 +257,9 @@
                 </div>
             </div>
             <div class="pure-u-1" style="text-align: center;">
-            <hr>
-                the source code is open source on <a href="https://github.com/aviv1ron1/requesttp" target="_blank">github</a>. bug reports or feature requests can be submitted on <a href="https://github.com/aviv1ron1/requesttp/issues" target="_blank">github issues</a>
+                <hr> the source code is open source on <a href="https://github.com/aviv1ron1/requesttp" target="_blank">github</a>. bug reports or feature requests can be submitted on <a href="https://github.com/aviv1ron1/requesttp/issues" target="_blank">github issues</a>
             </div>
         </div>
-
     </div>
     <script src="lib/jquery/jquery-1.11.1.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
@@ -281,4 +277,3 @@
 </body>
 
 </html>
-

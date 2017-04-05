@@ -1,0 +1,10 @@
+requesttp bugs:
+
+1. from url encoding to json doesnt work well with multiple attributes
+2. json encoding gets undefined sometimes
+
+
+features:
+
+1. json encoding attributes like in url decoded
+2. cookies - need to have ability to set them and read them
