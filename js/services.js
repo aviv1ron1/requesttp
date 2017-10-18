@@ -54,22 +54,27 @@ app.service('responseService', function(statusService) {
     }
 
     this.formatAs = function(format) {
-        switch (format) {
-            case "html":
-                this.data = html_beautify(this.dataObj);
-                break;
-            case "xml":
-                this.data = vkbeautify.xml(this.dataObj);
-                break;
-            case "css":
-                this.data = vkbeautify.css(this.dataObj);
-                break;
-            case "json":
-                var j = JSON.parse(this.dataObj);
-                this.data = JSON.stringify(j, undefined, 2);
-                break;
-            default:
-                this.data = this.dataObj;
+        try {
+            switch (format) {
+                case "html":
+                    this.data = html_beautify(this.dataObj);
+                    break;
+                case "xml":
+                    this.data = vkbeautify.xml(this.dataObj);
+                    break;
+                case "css":
+                    this.data = vkbeautify.css(this.dataObj);
+                    break;
+                case "json":
+                    var j = JSON.parse(this.dataObj);
+                    this.data = JSON.stringify(j, undefined, 2);
+                    break;
+                default:
+                    this.data = this.dataObj;
+            }
+        } catch (err) {
+            console.error("error formating response data according to content type, reverting to text format", err);
+            this.data = this.dataObj;
         }
     }
 
@@ -81,7 +86,7 @@ app.service('responseService', function(statusService) {
                 case "object":
                     try {
                         this.data = JSON.stringify(data, undefined, 2);
-                    }catch(err) {
+                    } catch (err) {
                         this.data = data;
                     }
                     break;
@@ -108,8 +113,8 @@ app.service('responseService', function(statusService) {
                             this.data = data;
                     }
             }
-        } catch(err) {
-            this.getError(err);
+        } catch (err) {
+            this.gotError(err);
         }
     }
 });

@@ -41,14 +41,10 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
 
     $scope.responseCallback = function(data, status, headers, config) {
         try {
-            if(data) {
-                $scope.response.setData(data, headers());
-                $scope.response.setHeaders(headers());
-                $scope.response.setStatus(status);
-            } else {
-
-            }
-        } catch(err) {
+            $scope.response.setData(data, headers());
+            $scope.response.setHeaders(headers());
+            $scope.response.setStatus(status);
+        } catch (err) {
             $scope.response.gotError(err);
         }
     }
