@@ -120,7 +120,7 @@ input#status.status-red {
 .linkbtn {
     margin-right: 10px;
 }
-.pure-button-GET, .pure-button-POST, .pure-button-PUT, .pure-button-DELETE, .pure-button-HEAD, .pure-button-OPTIONS {
+.pure-button-GET, .pure-button-POST, .pure-button-PUT, .pure-button-DELETE, .pure-button-HEAD, .pure-button-OPTIONS, .pure-button-PATCH {
     color: white;
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -145,6 +145,9 @@ input#status.status-red {
 .pure-button-DELETE {
     background: rgb(202, 60, 60);
     /* this is a maroon */
+}
+.pure-button-PATCH {
+    background: rgb(83, 58, 250);
 }
 .pure-button-HEAD, .pure-button-OPTIONS {
     background: rgb(120, 120, 120);

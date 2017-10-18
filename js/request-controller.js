@@ -5,7 +5,7 @@ var protocolRegex = /\w+:\/\//;
 
 app.controller('requestController', function($scope, $http, $q, contentTypeService, headerService, responseService) {
 
-    $scope.methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"];
+    $scope.methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"];
     $scope.styles = [true, false, false, false, false, false];
     $scope.selectedIndex = 0;
     $scope.popup = false;
@@ -124,16 +124,16 @@ app.controller('requestController', function($scope, $http, $q, contentTypeServi
         $scope.styles[$scope.selectedIndex] = false;
         $scope.selectedIndex = index;
         $scope.styles[$scope.selectedIndex] = true;
-        if (index < 1 || index > 2) {
-            if ($scope.data != null) {
-                $scope.oldData = $scope.data;
-            }
-            $scope.data = null;
-        } else {
-            if ($scope.data == null) {
-                $scope.data = $scope.oldData;
-            }
-        }
+        // if (index < 1 || index > 2) {
+        //     if ($scope.data != null) {
+        //         $scope.oldData = $scope.data;
+        //     }
+        //     $scope.data = null;
+        // } else {
+        //     if ($scope.data == null) {
+        //         $scope.data = $scope.oldData;
+        //     }
+        // }
     }
 
     $scope.insertMacro = function() {

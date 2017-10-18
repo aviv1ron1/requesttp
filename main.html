@@ -47,7 +47,7 @@
                                 <textarea name="header" rows="6" class="pure-input-1" ng-model="headers" focus-me="focusOnHeaders"></textarea>
                                 <div class="error" ng-show="errorInHeaders != null">{{errorInHeaders}}</div>
                             </div>
-                            <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 4">
+                            <div class="pure-u-1" ng-show="selectedIndex > 0 && selectedIndex < 5">
                                 <label for="data"><b class="linkbtn">Data:</b><a href="" class="linkbtn" ng-click="data=''" analytics="clear-data">clear</a><a href="" class="linkbtn" ng-click="openUrlEncoder()" analytics="url-encode-data">enter url encoded</a><a href="" class="linkbtn" ng-click="openJsonEncoder()" analytics="json-encode-data">enter json encoded</a>
                                 </label>
                                 <textarea name="data" rows="6" class="pure-input-1" ng-model="data" focus-me="focusOnData"></textarea>
